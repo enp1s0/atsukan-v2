@@ -106,10 +106,15 @@ void run_kernel(const unsigned n_op, const unsigned n_inner_loop, const std::siz
 }
 
 int main() {
+	const auto start_clock = std::chrono::high_resolution_clock::now();
 	for (unsigned n_op_log = 1; n_op_log < 5; n_op_log++) {
 		for (unsigned n_inner_loop_log = 1; n_inner_loop_log < 5; n_inner_loop_log++) {
 			const unsigned n_op = 1u << n_op_log;
 			const unsigned n_inner_loop = 1u << n_inner_loop_log;
+
+			const auto end_clock = std::chrono::high_resolution_clock::now();
+			const auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_clock - start_clock).count() * 1e-6;
+			std::printf("[INFO] %20s : n_op = %5u, n_inner_loop = %5u", "start kernel", n_op, n_inner_loop);
 
 			const std::size_t n_all_op = 1lu << 17;
 			const auto n_execution = n_all_op / (n_op * n_inner_loop);
