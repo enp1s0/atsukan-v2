@@ -16,4 +16,4 @@ all: $(TARGET)
 	$(NVCC) $< $(OBJS) $(NVCCFLAGS) -o $@
 
 clean:
-	rm -f *.test
+	rm -f *.out
