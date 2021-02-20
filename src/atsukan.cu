@@ -46,7 +46,7 @@ void run_kernel(const unsigned n_op, const unsigned n_inner_loop, const std::siz
 			NULL,
 			NULL);
 	const char *options[] = {
-		"--gpu-architecture=compute_86",
+		"-arch=sm_86",
 	};
 	nvrtcResult result = nvrtcCompileProgram(program, 1, options);
 	size_t log_size;
