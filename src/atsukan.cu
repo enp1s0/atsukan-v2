@@ -102,7 +102,7 @@ void run_kernel(const unsigned n_op, const unsigned n_inner_loop, const std::siz
 	CUTF_CHECK_ERROR(cudaDeviceSynchronize());
 	const auto end_clock = std::chrono::high_resolution_clock::now();
 	const auto elapsed_time_per_kernel = std::chrono::duration_cast<std::chrono::microseconds>(end_clock - start_clock).count() * 1e-6 / n_execution;
-	std::printf("[INFO] %20s : %e[s]", "time per kernel", elapsed_time_per_kernel);
+	std::printf("[INFO] %20s : %e[s]\n", "time per kernel", elapsed_time_per_kernel);
 }
 
 int main() {
@@ -114,7 +114,7 @@ int main() {
 
 			const auto end_clock = std::chrono::high_resolution_clock::now();
 			const auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_clock - start_clock).count() * 1e-6;
-			std::printf("[INFO] %20s : n_op = %5u, n_inner_loop = %5u", "start kernel", n_op, n_inner_loop);
+			std::printf("[INFO] %20s : n_op = %5u, n_inner_loop = %5u\n", "start kernel", n_op, n_inner_loop);
 
 			const std::size_t n_all_op = 1lu << 17;
 			const auto n_execution = n_all_op / (n_op * n_inner_loop);
