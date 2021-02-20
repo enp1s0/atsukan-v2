@@ -1,3 +1,6 @@
 [submodule "src/cutf"]
 	path = src/cutf
 	url = https://github.com/enp1s0/cutf
+[submodule "src/cuKernelFusing"]
+	path = src/cuKernelFusing
+	url = https://github.com/enp1s0/cuKernelFusing
