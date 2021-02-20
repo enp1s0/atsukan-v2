@@ -2,7 +2,7 @@ NVCC=nvcc
 
 SRCDIR=src
 
-NVCCFLAGS=-std=c++17 -I./src/cutf/include
+NVCCFLAGS=-std=c++17 -I./$(SRCDIR)/cutf/include -I./$(SRCDIR)/cuKernelFusing/include -lnvrtc -lcuda
 NVCCFLAGS+=-gencode arch=compute_86,code=sm_86
 NVCCFLAGS+=-gencode arch=compute_80,code=sm_80
 NVCCFLAGS+=-gencode arch=compute_75,code=sm_75
