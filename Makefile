@@ -10,6 +10,12 @@ NVCCFLAGS+=-gencode arch=compute_70,code=sm_70
 
 TARGET=atsukan.out
 
+MULTIGPU=YES
+
+ifeq ($(MULTIGPU), YES)
+NVCCFLAGS+=-lmpi
+endif
+
 all: $(TARGET)
 
 %.out:$(SRCDIR)/%.cu
