@@ -4,7 +4,7 @@ ATSUKAN-V2 is a type of GPU burner which searches most efficient B/f ratio.
 
 ## Installation
 ```bash
-git clone https://github.com/enp1s0/atsukan-v2
+git clone https://github.com/enp1s0/atsukan-v2 --recursive
 cd atsukan-v2
 make
 ```
