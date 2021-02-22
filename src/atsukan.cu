@@ -2,6 +2,7 @@
 #include <functional>
 #include <chrono>
 #include <thread>
+#include <mpi.h>
 #include <cutf/memory.hpp>
 #include <cutf/nvrtc.hpp>
 #include <cuda_kernel_fusing.hpp>
@@ -31,7 +32,7 @@ std::string gen_fma_kernel(const unsigned n_fma, const unsigned n_inner_loop) {
 	return kernel_constructor.generate_kernel_code(func_list);
 }
 
-void run_kernel(const unsigned n_op, const unsigned n_inner_loop, const std::size_t array_size, const std::function<std::string(const unsigned, const unsigned)> gen_kernel_func, const std::size_t n_execution) {
+void run_kernel(const unsigned n_op, const unsigned n_inner_loop, const std::size_t array_size, const std::function<std::string(const unsigned, const unsigned)> gen_kernel_func, const std::size_t n_execution, const int device_id) {
 	auto src_mem = cutf::memory::get_device_unique_ptr<float>(array_size);
 	auto dst_mem = cutf::memory::get_device_unique_ptr<float>(array_size);
 
@@ -75,7 +76,7 @@ void run_kernel(const unsigned n_op, const unsigned n_inner_loop, const std::siz
 	CUmodule cuModule;
 	CUfunction cuFunction;
 	cuInit(0);
-	cuDeviceGet(&cuDevice, 0);
+	cuDeviceGet(&cuDevice, device_id);
 	cuCtxCreate(&cuContext, 0, cuDevice);
 	cuModuleLoadDataEx(&cuModule, ptx, 0, 0, 0);
 	cuModuleGetFunction(&cuFunction, cuModule, "cukf_main");
@@ -105,7 +106,12 @@ void run_kernel(const unsigned n_op, const unsigned n_inner_loop, const std::siz
 	std::printf("[INFO] %20s : %e[s]\n", "time per kernel", elapsed_time_per_kernel);
 }
 
-int main() {
+int main(int argc, char** argv) {
+	MPI_Init(&argc, &argv);
+
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	cudaSetDevice(rank);
 	const auto start_clock = std::chrono::high_resolution_clock::now();
 	for (unsigned n_op_log = 1; n_op_log < 5; n_op_log++) {
 		for (unsigned n_inner_loop_log = 1; n_inner_loop_log < 5; n_inner_loop_log++) {
@@ -118,7 +124,7 @@ int main() {
 
 			const std::size_t n_all_op = 1lu << 17;
 			const auto n_execution = n_all_op / (n_op * n_inner_loop);
-			run_kernel(n_op, n_inner_loop, 1lu << 30, gen_fma_kernel, n_execution);
+			run_kernel(n_op, n_inner_loop, 1lu << 30, gen_fma_kernel, n_execution, rank);
 
 			std::this_thread::sleep_for(std::chrono::seconds(4));
 		}
